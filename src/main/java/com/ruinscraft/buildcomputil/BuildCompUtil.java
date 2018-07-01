@@ -24,7 +24,7 @@ public class BuildCompUtil extends JavaPlugin implements Listener {
 
 	private static final String PREFIX = "[" + ChatColor.AQUA + "P2" + ChatColor.RESET + "] ";
 
-	private static final long START_TIME = 1530374415000L;
+	private static final long START_TIME = 1530453600000L;
 	private static final long END_TIME = 1531256400000L;
 
 	@Override
