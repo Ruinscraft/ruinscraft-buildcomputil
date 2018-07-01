@@ -9,7 +9,9 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -77,6 +79,16 @@ public class BuildCompUtil extends JavaPlugin implements Listener {
 		Player player = event.getPlayer();
 
 		bossBar.removePlayer(player);
+	}
+
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onPlayerChat(AsyncPlayerChatEvent event) {
+		if (!(FilterUtils.isAppropriate(
+				event.getMessage(), getConfig().getString("webpurify-api-key")))) {
+			event.getPlayer().sendMessage(
+					ChatColor.RED + "Please do not use inappropriate language!");
+			event.setCancelled(true);
+		}
 	}
 
 	public static String getTimeRemaining() {
