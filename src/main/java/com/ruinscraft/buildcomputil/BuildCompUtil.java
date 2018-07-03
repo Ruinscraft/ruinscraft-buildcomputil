@@ -89,6 +89,11 @@ public class BuildCompUtil extends JavaPlugin implements Listener {
 					ChatColor.RED + "Please do not use inappropriate language!");
 			event.setCancelled(true);
 		}
+
+		if (!FilterUtils.isASCII(event.getMessage())) {
+			event.getPlayer().sendMessage(ChatColor.RED + "Please use only ASCII characters in chat.");
+			event.setCancelled(true);
+		}
 	}
 
 	public static String getTimeRemaining() {
