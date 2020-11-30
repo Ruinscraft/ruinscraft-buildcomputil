@@ -1,17 +1,17 @@
 package com.ruinscraft.buildcomputil;
 
-import com.intellectualcrafters.plot.commands.CommandCategory;
-import com.intellectualcrafters.plot.commands.RequiredType;
-import com.intellectualcrafters.plot.commands.SubCommand;
-import com.intellectualcrafters.plot.object.Plot;
-import com.intellectualcrafters.plot.object.PlotArea;
-import com.intellectualcrafters.plot.object.PlotId;
-import com.intellectualcrafters.plot.object.PlotPlayer;
-import com.plotsquared.general.commands.CommandDeclaration;
+import com.github.intellectualsites.plotsquared.commands.CommandDeclaration;
+import com.github.intellectualsites.plotsquared.plot.commands.CommandCategory;
+import com.github.intellectualsites.plotsquared.plot.commands.RequiredType;
+import com.github.intellectualsites.plotsquared.plot.commands.SubCommand;
+import com.github.intellectualsites.plotsquared.plot.object.Plot;
+import com.github.intellectualsites.plotsquared.plot.object.PlotArea;
+import com.github.intellectualsites.plotsquared.plot.object.PlotId;
+import com.github.intellectualsites.plotsquared.plot.object.PlotPlayer;
 
 @CommandDeclaration(
 		command = "auto", 
-		category = CommandCategory.CLAIMING, 
+		category = CommandCategory.CLAIMING,
 		usage = "/plot auto",
 		permission = "plots.auto", 
 		description = "Start building and competing!",
@@ -21,7 +21,7 @@ public class PlotAuto extends SubCommand {
 	@Override
 	public boolean onCommand(final PlotPlayer sender, String[] args) {
 		if (sender.getPlots().size() >= 1) {
-			BuildCompUtil.sendPrefixMessage(sender, "You already have a plot claimed! Use /p home.");
+			BuildCompUtilPlugin.sendPrefixMessage(sender, "You already have a plot claimed! Use /p home.");
 			return false;
 		}
 		PlotArea plotArea = sender.getPlotAreaAbs();
@@ -38,7 +38,7 @@ public class PlotAuto extends SubCommand {
 				}
 			}
 		}
-		BuildCompUtil.sendPrefixMessage(sender, "Could not find a plot to claim.");
+		BuildCompUtilPlugin.sendPrefixMessage(sender, "Could not find a plot to claim.");
 		return false;
 	}
 

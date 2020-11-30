@@ -1,7 +1,7 @@
 package com.ruinscraft.buildcomputil;
 
-import java.util.concurrent.TimeUnit;
-
+import com.github.intellectualsites.plotsquared.plot.object.PlotPlayer;
+import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BarColor;
@@ -9,18 +9,14 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.intellectualcrafters.plot.object.PlotPlayer;
+import java.util.concurrent.TimeUnit;
 
-import net.md_5.bungee.api.ChatColor;
-
-public class BuildCompUtil extends JavaPlugin implements Listener {
+public class BuildCompUtilPlugin extends JavaPlugin implements Listener {
 
 	private BossBar bossBar;
 
@@ -79,21 +75,6 @@ public class BuildCompUtil extends JavaPlugin implements Listener {
 		Player player = event.getPlayer();
 
 		bossBar.removePlayer(player);
-	}
-
-	@EventHandler(priority = EventPriority.LOWEST)
-	public void onPlayerChat(AsyncPlayerChatEvent event) {
-		if (!(FilterUtils.isAppropriate(
-				event.getMessage(), getConfig().getString("webpurify-api-key")))) {
-			event.getPlayer().sendMessage(
-					ChatColor.RED + "Please do not use inappropriate language!");
-			event.setCancelled(true);
-		}
-
-		if (!FilterUtils.isASCII(event.getMessage())) {
-			event.getPlayer().sendMessage(ChatColor.RED + "Please use only ASCII characters in chat.");
-			event.setCancelled(true);
-		}
 	}
 
 	public static String getTimeRemaining() {
