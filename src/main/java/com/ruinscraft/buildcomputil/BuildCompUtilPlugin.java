@@ -8,12 +8,17 @@ import org.bukkit.Sound;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
+import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.concurrent.TimeUnit;
@@ -24,8 +29,8 @@ public class BuildCompUtilPlugin extends JavaPlugin implements Listener {
 
 	private static final String PREFIX = "[" + ChatColor.GOLD + "P2" + ChatColor.RESET + "] ";
 
-	private static final long START_TIME = 1606802400000L;
-	private static final long END_TIME = 1608012000000L;
+	private static final long START_TIME = 1607382000000L;
+	private static final long END_TIME = 1631052000000L;
 
 	private PlotAuto plotAuto;
 
@@ -71,6 +76,24 @@ public class BuildCompUtilPlugin extends JavaPlugin implements Listener {
 	@Override
 	public void onDisable() {
 		bossBar.removeAll();
+	}
+
+	@EventHandler
+	public void onChunkLoad(ChunkLoadEvent event) {
+		for (Entity entity : event.getChunk().getEntities()) {
+			if (entity instanceof Fireball
+					|| entity.getType() == EntityType.FIREBALL) {
+				entity.remove();
+			}
+		}
+	}
+
+	@EventHandler
+	public void onEntitySpawn(EntitySpawnEvent event) {
+		if (event.getEntity() instanceof Fireball
+				|| event.getEntityType() == EntityType.FIREBALL) {
+			event.setCancelled(true);
+		}
 	}
 
 	@EventHandler
