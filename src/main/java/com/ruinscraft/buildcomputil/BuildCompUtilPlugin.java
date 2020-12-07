@@ -4,6 +4,7 @@ import com.github.intellectualsites.plotsquared.plot.object.PlotPlayer;
 import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
@@ -12,6 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.concurrent.TimeUnit;
@@ -20,10 +22,12 @@ public class BuildCompUtilPlugin extends JavaPlugin implements Listener {
 
 	private BossBar bossBar;
 
-	private static final String PREFIX = "[" + ChatColor.AQUA + "P2" + ChatColor.RESET + "] ";
+	private static final String PREFIX = "[" + ChatColor.GOLD + "P2" + ChatColor.RESET + "] ";
 
-	private static final long START_TIME = 1530453600000L;
-	private static final long END_TIME = 1531256400000L;
+	private static final long START_TIME = 1606802400000L;
+	private static final long END_TIME = 1608012000000L;
+
+	private PlotAuto plotAuto;
 
 	@Override
 	public void onEnable() {
@@ -33,16 +37,22 @@ public class BuildCompUtilPlugin extends JavaPlugin implements Listener {
 			getLogger().info("PlotSquared not found.");
 			return;
 		}
-		new PlotAuto();
+
+		plotAuto = new PlotAuto();
+		new PlotClaim();
+		new PlotAdd();
+		new PlotTrust();
+		new PlotSetOwner();
+		new PlotDelete();
 
 		getServer().getPluginManager().registerEvents(this, this);
 
 		bossBar = getServer().createBossBar(
-				ChatColor.AQUA + "Time left", BarColor.YELLOW, BarStyle.SOLID);
+				ChatColor.GOLD + "Time left", BarColor.YELLOW, BarStyle.SOLID);
 
 		getServer().getScheduler().runTaskTimer(this, () -> {
 			bossBar.setTitle(
-					ChatColor.AQUA + "Time left: " + 
+					ChatColor.GOLD + "Time left: " +
 							ChatColor.RESET + getTimeRemaining());
 
 			double pct = getPercentageLeft() / 100;
@@ -65,16 +75,47 @@ public class BuildCompUtilPlugin extends JavaPlugin implements Listener {
 
 	@EventHandler
 	public void onJoin(PlayerJoinEvent event) {
+		event.setJoinMessage(null);
+
 		Player player = event.getPlayer();
+
+		if (!player.hasPlayedBefore()) {
+			givePowders(player);
+		}
+
+		PlotPlayer plotPlayer = PlotPlayer.wrap(player);
+
+		if (plotPlayer.getPlotCount() < 1) {
+			plotAuto.onCommand(plotPlayer, new String[] {});
+		}
 
 		bossBar.addPlayer(player);
 	}
 
+	private void givePowders(Player player) {
+		String[] powders = new String[] {"2020", "AmongUs", "AmongUsImposter", "Biden", "Coronavirus", "GoogleHangouts", "KillerHornets", "Mask", "Skype", "SkypeRingtone", "StocksDown", "StocksUp", "ToiletPaper", "Trump", "Zoom"};
+
+		for (String powder : powders) {
+			getServer().dispatchCommand(getServer().getConsoleSender(), "lp user " + player.getUniqueId() + " permission set powder.powder." + powder + " true");
+		}
+
+		player.sendTitle(org.bukkit.ChatColor.GOLD + "POWDER UP!", "You received some 2020 Powders!", 5, 80, 20);
+		player.sendMessage(org.bukkit.ChatColor.GOLD + "You received some 2020 Powders! Use '/pow events' to view them");
+		player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.5F, 1.0F);
+	}
+
 	@EventHandler
 	public void onQuit(PlayerQuitEvent event) {
+		event.setQuitMessage(null);
+
 		Player player = event.getPlayer();
 
 		bossBar.removePlayer(player);
+	}
+
+	@EventHandler
+	public void onWeather(WeatherChangeEvent event) {
+		event.setCancelled(true);
 	}
 
 	public static String getTimeRemaining() {
